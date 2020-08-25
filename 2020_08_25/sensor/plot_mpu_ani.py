@@ -27,6 +27,7 @@ def new_data_insert(mpu, mpu_val):
     #pop
     mpu = np.delete(mpu, 0, 0)
 
+
     return mpu
 
 
@@ -64,33 +65,33 @@ def ln_set_data(mpu):
 
 # change y limit dynamically
 def change_ylim(ax, mpu):
-    ax[0].set_ylim(min(mpu[:,0]), max(mpu[:,0]))
-    ax[1].set_ylim(min(mpu[:,1]), max(mpu[:,1]))
-    ax[2].set_ylim(min(mpu[:,2]), max(mpu[:,2]))
-    ax[3].set_ylim(min(mpu[:,3]), max(mpu[:,3]))
-    ax[4].set_ylim(min(mpu[:,4]), max(mpu[:,4]))
-    ax[5].set_ylim(min(mpu[:,5]), max(mpu[:,5]))
+    ax[0, 0].set_ylim(min(mpu[:,0]), max(mpu[:,0]))
+    ax[1, 0].set_ylim(min(mpu[:,1]), max(mpu[:,1]))
+    ax[2, 0].set_ylim(min(mpu[:,2]), max(mpu[:,2]))
+    ax[0, 1].set_ylim(min(mpu[:,3]), max(mpu[:,3]))
+    ax[1, 1].set_ylim(min(mpu[:,4]), max(mpu[:,4]))
+    ax[2, 1].set_ylim(min(mpu[:,5]), max(mpu[:,5]))
 
 
 def mpu_init_plot(ax, mpu):
-    ln0, = ax[0].plot(t,mpu[:,0], 'r')
-    ax[0].grid(True)
-    ax[0].set_title("acc x")
-    ln1, = ax[1].plot(t,mpu[:,1], 'g')
-    ax[1].grid(True)
-    ax[1].set_title("acc y")
-    ln2, = ax[2].plot(t,mpu[:,2], 'b')
-    ax[2].grid(True)
-    ax[2].set_title("acc z")
-    ln3, = ax[3].plot(t,mpu[:,3], 'r')
-    ax[3].grid(True)
-    ax[3].set_title("gyro x")
-    ln4, = ax[4].plot(t,mpu[:,4], 'g')
-    ax[4].grid(True)
-    ax[4].set_title("gyro y")
-    ln5, = ax[5].plot(t,mpu[:,5], 'b')
-    ax[5].grid(True)
-    ax[5].set_title("gyro z")
+    ln0, = ax[0, 0].plot(t,mpu[:,0], 'r')
+    ax[0, 0].grid(True)
+    ax[0, 0].set_title("acc x")
+    ln1, = ax[1, 0].plot(t,mpu[:,1], 'g')
+    ax[1, 0].grid(True)
+    ax[1, 0].set_title("acc y")
+    ln2, = ax[2, 0].plot(t,mpu[:,2], 'b')
+    ax[2, 0].grid(True)
+    ax[2, 0].set_title("acc z")
+    ln3, = ax[0, 1].plot(t,mpu[:,3], 'r')
+    ax[0, 1].grid(True)
+    ax[0, 1].set_title("gyro x")
+    ln4, = ax[1, 1].plot(t,mpu[:,4], 'g')
+    ax[1, 1].grid(True)
+    ax[1, 1].set_title("gyro y")
+    ln5, = ax[2, 1].plot(t,mpu[:,5], 'b')
+    ax[2, 1].grid(True)
+    ax[2, 1].set_title("gyro z")
     return ln0, ln1, ln2, ln3, ln4, ln5
 
 
@@ -98,7 +99,7 @@ def mpu_init_plot(ax, mpu):
 def update(i):
     global mpu
     mpu_val = get_mpu_val(zumi)
-    new_data_insert(mpu, mpu_val)
+    mpu = new_data_insert(mpu, mpu_val)
 
     ln_set_data(mpu)
     change_ylim(ax, mpu)
@@ -112,9 +113,7 @@ zumi = Zumi()
 t, mpu = init()
 
 #plot
-fig, ax = plt.subplots(6,1)
-print(ax.shape)
-print(ax)
+fig, ax = plt.subplots(3,2)
 ln0, ln1, ln2, ln3, ln4, ln5 = mpu_init_plot(ax, mpu)
 
 #animation
