@@ -86,5 +86,5 @@ R = np.diag([1, 1, 1])
 xEst = np.zeros((3,1))
 pEst = np.diag([1, 1, 1])
 
-z =get_acc(zumi)
+z = get_acc(zumi)
 xEst, pEst = kalman_filter(z, xEst, pEst)

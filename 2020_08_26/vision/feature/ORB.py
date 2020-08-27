@@ -2,26 +2,22 @@ import numpy as np
 import cv2
 
 cap = cv2.VideoCapture(0)
-surf = cv2.SIFT_create()
-brief = cv2.xfeatures2d.BriefDescriptorExtractor_create()
-
-
 ret, frame = cap.read()
 rsz = cv2.resize(frame, dsize=(320,240))
 gray = cv2.cvtColor(rsz, cv2.COLOR_BGR2GRAY)
-# Initiate STAR detector
+# Initiate ORB detector
 orb = cv2.ORB_create()
 
 # find the keypoints with ORB
 kp = orb.detect(gray,None)
 # compute the descriptors with ORB
 kp, desc = orb.compute(gray, kp)
-print("orb kp.shape : " + str(len(kp)) + ", orb desc.shape : " + str(desc.shape))
+#print("orb kp.shape : " + str(len(kp)) + ", orb desc.shape : " + str(desc.shape))
 
 
 while(True):
     ret, frame = cap.read()
-    #frame = cv2.flip(frame, 0)
+    frame = cv2.flip(frame, 0)
     rsz = cv2.resize(frame,dsize=(320,240))
     gray = cv2.cvtColor(rsz, cv2.COLOR_BGR2GRAY)
 
