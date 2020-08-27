@@ -52,32 +52,25 @@ def init():
 kf
 """
 
-def kalman_filter(z_meas, x_esti, P):
+def kalman_filter(z, xEst, P):
     """Kalman Filter Algorithm for One Variable."""
-    x_pred = A * x_esti
-    P_pred = A * P * A + Q
-    print(P_pred)
-    K = P_pred * H / (H * P_pred * H + R)
-    x_esti = x_pred + K * (z_meas - H * x_pred)
-    P = P_pred - K * H * P_pred
-
-    return x_esti, P
+    print("z : "+str(z))
+    xPred = A * xEst
+    print("xPred : "+str(xPred))
+    pPred = A * P * A + Q
+    print("pPred : " + str(pPred))
+    K = pPred * H / (H * pPred * H + R)
+    print("K : " + str(K))
+    xEst = xPred + K * (z - H * xPred)
+    print("xEst : " + str(xEst))
+    P = pPred - K * H * pPred
+    return xEst, P
 
 
 def get_accx(zumi):
-    accx = get_mpu_val(zumi)[0]
+    accx = get_mpu_val(zumi)[0][0]
     return accx
 
-
-
-
-def update(i):
-    global zumi, accxs, xEst, pEst
-    z = get_accx(zumi)
-    xEst, pEst = kalman_filter(z, xEst, pEst)
-    accxs = new_data_insert(accxs, xEst)
-    ln0.set_data(t, accxs)
-    return ln0,
 
 
 
@@ -100,21 +93,5 @@ R = 4
 xEst = 0
 pEst = 1
 
-
-#plot
-fig, ax = plt.subplots(1)
-ln0, = ax.plot(t, accxs, 'r')
-
-
-def main():
-
-
-
-    #animation
-    ani = FuncAnimation(fig, update, frames=t, blit=True)
-    plt.show()
-
-
-
-if __name__ == "__main__":
-    main()
+z = get_accx(zumi)
+xEst, pEst = kalman_filter(z, xEst, pEst)

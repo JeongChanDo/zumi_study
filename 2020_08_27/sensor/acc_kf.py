@@ -27,11 +27,6 @@ def new_data_insert(mpu, mpu_val):
 
 
 
-
-
-
-
-
 """
 initialize mpu data
 """
@@ -51,33 +46,24 @@ def init():
 """
 kf
 """
+def kalman_filter(z, xEst, P):
+    print("z : \n"+str(z))
+    xPred = A @ xEst
+    print("xPred : \n"+str(xPred))
+    pPred = A @ P @ A + Q
+    print("pPred :\n " + str(pPred))
+    K = pPred @ H @ np.linalg.inv(H @ pPred @ H + R)
+    print("K : \n" + str(K))
+    xEst = xPred + K @ (z - H @ xPred)
+    print("xEst : \n" + str(xEst))
+    P = pPred - K @ H @ pPred
+    return xEst, P
 
-def kalman_filter(z_meas, x_esti, P):
-    """Kalman Filter Algorithm for One Variable."""
-    x_pred = A * x_esti
-    P_pred = A * P * A + Q
-    print(P_pred)
-    K = P_pred * H / (H * P_pred * H + R)
-    x_esti = x_pred + K * (z_meas - H * x_pred)
-    P = P_pred - K * H * P_pred
+def get_acc(zumi):
+    acc = get_mpu_val(zumi)[0][0:3]
+    acc = np.array([acc])
+    return acc.T
 
-    return x_esti, P
-
-
-def get_accx(zumi):
-    accx = get_mpu_val(zumi)[0]
-    return accx
-
-
-
-
-def update(i):
-    global zumi, accxs, xEst, pEst
-    z = get_accx(zumi)
-    xEst, pEst = kalman_filter(z, xEst, pEst)
-    accxs = new_data_insert(accxs, xEst)
-    ln0.set_data(t, accxs)
-    return ln0,
 
 
 
@@ -85,36 +71,20 @@ def update(i):
 #initialize
 zumi = Zumi()
 t, mpu = init()
-accxs = mpu[:, 0]
+accxs = mpu[:, 0:2]
 
 
 
 # Initialization for system model.
-A = 1
-H = 1
-Q = 0
-R = 4
+A = np.diag([1, 1, 1])
+H = np.diag([1, 1, 1])
+Q = np.zeros((3,3))
+R = np.diag([1, 1, 1])
 
 
 # Initialization for estimation.
-xEst = 0
-pEst = 1
+xEst = np.zeros((3,1))
+pEst = np.diag([1, 1, 1])
 
-
-#plot
-fig, ax = plt.subplots(1)
-ln0, = ax.plot(t, accxs, 'r')
-
-
-def main():
-
-
-
-    #animation
-    ani = FuncAnimation(fig, update, frames=t, blit=True)
-    plt.show()
-
-
-
-if __name__ == "__main__":
-    main()
+z =get_acc(zumi)
+xEst, pEst = kalman_filter(z, xEst, pEst)
